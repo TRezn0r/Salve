@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0f0f16">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WorkTimer">
+<title>WorkTimer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font-body: "Inter", "Roboto", sans-serif;
+  --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+  --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+  --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+  --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+  --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;
+  --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;
+  --radius-sm:.375rem;--radius-md:.5rem;--radius-lg:.875rem;
+  --radius-xl:1.25rem;--radius-full:9999px;
+  --transition-fast:140ms cubic-bezier(0.16,1,0.3,1);
+  --transition-interactive:220ms cubic-bezier(0.16,1,0.3,1);
+  --transition-slow:360ms cubic-bezier(0.16,1,0.3,1);
+}
+[data-theme="dark"] {
+  --bg:#0f0f16;--surface:#15151e;--surface-2:#1b1b26;--surface-3:#21212e;
+  --border:rgba(255,255,255,0.08);--divider:rgba(255,255,255,0.06);
+  --text:#e6e6f0;--text-muted:#888898;--text-faint:#44445a;
+  --tile-off-bg:#181828;--tile-off-border:rgba(70,110,200,0.22);
+  --tile-off-text:#7080b0;--tile-off-accent:#354070;
+  --tile-on-bg:#0e2a5c;--tile-on-border:rgba(70,150,255,0.55);
+  --tile-on-text:#ddeeff;--tile-on-accent:#55aaff;
+  --tile-on-glow:0 0 28px rgba(70,150,255,0.22),0 6px 24px rgba(0,0,0,0.5);
+  --accent:#4fa8ff;--accent-hover:#78beff;--accent-dim:rgba(79,168,255,0.14);
+  --success:#4caf6e;--danger:#ff6b6b;--warning:#ffb347;
+  --header-bg:rgba(13,13,20,0.94);--nav-border:rgba(255,255,255,0.07);
+  --shadow-sm:0 1px 4px rgba(0,0,0,0.5);--shadow-md:0 4px 20px rgba(0,0,0,0.55);
+  --shadow-lg:0 8px 36px rgba(0,0,0,0.65);
+}
+[data-theme="light"] {
+  --bg:#eef0f8;--surface:#ffffff;--surface-2:#f4f5fb;--surface-3:#ecedf6;
+  --border:rgba(0,0,0,0.08);--divider:rgba(0,0,0,0.05);
+  --text:#18182e;--text-muted:#5a5c78;--text-faint:#b0b2cc;
+  --tile-off-bg:#e6eaf8;--tile-off-border:rgba(50,80,200,0.16);
+  --tile-off-text:#4a5898;--tile-off-accent:#7888c0;
+  --tile-on-bg:#1a4da0;--tile-on-border:rgba(26,100,240,0.65);
+  --tile-on-text:#ffffff;--tile-on-accent:#70c0ff;
+  --tile-on-glow:0 0 24px rgba(26,100,240,0.18),0 4px 20px rgba(0,0,0,0.14);
+  --accent:#1a72e8;--accent-hover:#1558c0;--accent-dim:rgba(26,114,232,0.12);
+  --success:#28a055;--danger:#d63030;--warning:#e07800;
+  --header-bg:rgba(238,240,248,0.95);--nav-border:rgba(0,0,0,0.07);
+  --shadow-sm:0 1px 4px rgba(0,0,0,0.10);--shadow-md:0 4px 20px rgba(0,0,0,0.12);
+  --shadow-lg:0 8px 36px rgba(0,0,0,0.16);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:none;text-size-adjust:none;-webkit-font-smoothing:antialiased;height:100%}
+body{font-family:var(--font-body);font-size:var(--text-base);color:var(--text);background:var(--bg);
+  min-height:100dvh;overflow-x:hidden;-webkit-tap-highlight-color:transparent;user-select:none;
+  transition:background .3s ease,color .3s ease}
+button{cursor:pointer;border:none;background:none;font:inherit;color:inherit}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:var(--radius-sm)}
+input{-webkit-appearance:none}
+
+/* ── SHELL ── */
+.app{display:flex;flex-direction:column;min-height:100dvh;max-width:480px;margin:0 auto;
+  background:var(--bg);position:relative}
+@media(min-width:480px){.app{box-shadow:0 0 80px rgba(0,0,0,0.4);
+  border-left:1px solid var(--border);border-right:1px solid var(--border)}}
+
+/* ── TOP NAV ── */
+.top-nav{position:sticky;top:0;z-index:100;background:var(--header-bg);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--nav-border);display:flex;align-items:stretch;
+  height:54px;padding:var(--space-1);gap:2px}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;padding:var(--space-1) 2px;border-radius:var(--radius-md);font-size:8px;
+  font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-faint);
+  transition:color var(--transition-fast),background var(--transition-fast);
+  position:relative;white-space:nowrap;min-width:0}
+.nb.active{color:var(--accent)}
+.nb.active::after{content:"";position:absolute;bottom:2px;left:25%;right:25%;height:2px;
+  background:var(--accent);border-radius:var(--radius-full)}
+.nb:active{background:var(--accent-dim)}
+.theme-btn{width:36px;height:36px;border-radius:var(--radius-full);display:flex;
+  align-items:center;justify-content:center;color:var(--text-muted);flex-shrink:0;
+  align-self:center;transition:color var(--transition-fast),background var(--transition-fast)}
+.theme-btn:active{background:var(--accent-dim);color:var(--accent)}
+
+/* ── SCREENS ── */
+.screen{display:none;flex-direction:column;flex:1}
+.screen.active{display:flex;animation:sIn 200ms cubic-bezier(0.16,1,0.3,1)}
+@keyframes sIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HOME HEADER ── */
+.home-hdr{background:var(--surface);padding:var(--space-4);border-bottom:1px solid var(--divider);
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+.hcard{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:var(--space-3) var(--space-4);display:flex;flex-direction:column;gap:3px}
+.hlbl{font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.hval{font-size:var(--text-base);font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;line-height:1.1}
+.hsub{font-size:var(--text-xs);font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+
+/* ── TILE GRID ── */
+.tile-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);
+  padding:var(--space-4);flex:1;align-content:start;overflow-y:auto}
+
+/* ── TILE ── */
+.tile{border-radius:var(--radius-xl);border:1.5px solid var(--tile-off-border);
+  background:var(--tile-off-bg);padding:var(--space-4) var(--space-4) var(--space-3);
+  display:flex;flex-direction:column;gap:var(--space-2);cursor:pointer;position:relative;
+  overflow:hidden;transition:background var(--transition-interactive),
+  border-color var(--transition-interactive),box-shadow var(--transition-interactive),
+  transform var(--transition-fast);min-height:148px;box-shadow:var(--shadow-sm);
+  -webkit-tap-highlight-color:transparent}
+.tile::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  transition:height var(--transition-interactive),opacity var(--transition-interactive);opacity:.5}
+.tile:active{transform:scale(0.96)}
+.tile.running{box-shadow:var(--tile-on-glow);background:var(--tile-on-bg);border-color:var(--tile-on-border)}
+.tile.running::before{height:4px;opacity:1}
+
+/* per-tile accent colours */
+.tile[data-ci="0"]::before{background:#4fa8ff}
+.tile[data-ci="1"]::before{background:#a78bfa}
+.tile[data-ci="2"]::before{background:#34d399}
+.tile[data-ci="3"]::before{background:#fb923c}
+.tile[data-ci="4"]::before{background:#f472b6}
+.tile[data-ci="5"]::before{background:#facc15}
+.tile[data-ci="6"]::before{background:#38bdf8}
+.tile[data-ci="7"]::before{background:#4ade80}
+
+.tile-dot{position:absolute;top:var(--space-3);right:var(--space-3);width:9px;height:9px;
+  border-radius:var(--radius-full);opacity:.5;
+  transition:opacity var(--transition-interactive),box-shadow var(--transition-interactive)}
+.tile.running .tile-dot{opacity:1;animation:blink 1.3s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.tile[data-ci="0"] .tile-dot{background:#4fa8ff}
+.tile[data-ci="1"] .tile-dot{background:#a78bfa}
+.tile[data-ci="2"] .tile-dot{background:#34d399}
+.tile[data-ci="3"] .tile-dot{background:#fb923c}
+.tile[data-ci="4"] .tile-dot{background:#f472b6}
+.tile[data-ci="5"] .tile-dot{background:#facc15}
+.tile[data-ci="6"] .tile-dot{background:#38bdf8}
+.tile[data-ci="7"] .tile-dot{background:#4ade80}
+
+.tile-lbl{font-size:9px;font-weight:800;color:var(--tile-off-text);text-transform:uppercase;
+  letter-spacing:.10em;transition:color var(--transition-interactive)}
+.tile.running .tile-lbl{color:var(--tile-on-accent)}
+.tile-name{font-size:var(--text-sm);font-weight:700;color:var(--tile-off-text);line-height:1.25;
+  flex:1;display:flex;align-items:flex-end;transition:color var(--transition-interactive);
+  word-break:break-word}
+.tile.running .tile-name{color:var(--tile-on-text)}
+.tile-time{font-size:var(--text-lg);font-weight:900;font-variant-numeric:tabular-nums;
+  letter-spacing:-.03em;line-height:1;transition:color var(--transition-interactive)}
+.tile.running .tile-time{color:var(--tile-on-accent)!important}
+.tile-state{font-size:var(--text-xs);font-weight:600;color:var(--tile-off-text);
+  display:flex;align-items:center;gap:4px;opacity:.6;
+  transition:color var(--transition-interactive),opacity var(--transition-interactive)}
+.tile.running .tile-state{color:var(--tile-on-text);opacity:.75}
+
+/* Add-tile button */
+.tile-add{border:1.5px dashed var(--border);background:transparent;display:flex;
+  flex-direction:column;align-items:center;justify-content:center;gap:var(--space-2);
+  color:var(--text-faint);font-size:var(--text-xs);font-weight:700;letter-spacing:.06em;
+  cursor:pointer;border-radius:var(--radius-xl);min-height:148px;
+  transition:border-color var(--transition-fast),color var(--transition-fast),background var(--transition-fast)}
+.tile-add:active{background:var(--accent-dim);color:var(--accent);border-color:var(--accent)}
+
+/* ── STATS ── */
+.stats-wrap{flex:1;padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-4);overflow-y:auto}
+.pbadge{display:inline-flex;align-items:center;gap:var(--space-1);background:var(--accent-dim);
+  color:var(--accent);border-radius:var(--radius-full);padding:4px var(--space-3);
+  font-size:var(--text-xs);font-weight:800;letter-spacing:.04em;align-self:flex-start}
+.total-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);
+  padding:var(--space-5);box-shadow:var(--shadow-sm)}
+.tlbl{font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:var(--space-1)}
+.tval{font-size:var(--text-xl);font-weight:900;color:var(--accent);font-variant-numeric:tabular-nums;
+  line-height:1;margin-bottom:4px}
+.tsub{font-size:var(--text-xs);color:var(--text-muted)}
+.tasks-list{display:flex;flex-direction:column;gap:var(--space-3)}
+.task-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:var(--space-4);display:flex;align-items:center;gap:var(--space-3);box-shadow:var(--shadow-sm)}
+.task-dot{width:11px;height:11px;border-radius:var(--radius-full);flex-shrink:0}
+.task-info{flex:1;min-width:0}
+.task-name{font-size:var(--text-sm);font-weight:700;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task-hms{font-size:var(--text-xs);color:var(--text-muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.bar-wrap{width:52px;height:4px;background:var(--surface-3);border-radius:var(--radius-full);
+  overflow:hidden;flex-shrink:0}
+.bar{height:100%;border-radius:var(--radius-full);transition:width .6s ease}
+.pct{font-size:var(--text-xs);font-variant-numeric:tabular-nums;font-weight:700;
+  color:var(--text-muted);min-width:32px;text-align:right;flex-shrink:0}
+
+/* ── CSV PANEL ── */
+.csv-wrap{flex:1;padding:var(--space-4);display:flex;flex-direction:column;gap:var(--space-4);overflow-y:auto}
+.csv-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);
+  padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4)}
+.csv-title{font-size:var(--text-base);font-weight:800;color:var(--text)}
+.csv-row{display:flex;flex-direction:column;gap:var(--space-2)}
+.csv-label{font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+.csv-input{background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius-md);
+  padding:var(--space-3) var(--space-4);font-size:var(--text-base);color:var(--text);width:100%;
+  font-family:var(--font-body);transition:border-color var(--transition-fast)}
+.csv-input:focus{outline:none;border-color:var(--accent)}
+.csv-input::placeholder{color:var(--text-faint)}
+/* ── CSV IMPORT ── */
+.import-drop{border:2px dashed var(--border);border-radius:var(--radius-lg);
+  padding:var(--space-8) var(--space-4);display:flex;flex-direction:column;
+  align-items:center;gap:var(--space-3);cursor:pointer;
+  transition:border-color var(--transition-fast),background var(--transition-fast);
+  background:var(--surface-2);text-align:center}
+.import-drop.drag{border-color:var(--accent);background:var(--accent-dim)}
+.import-drop svg{color:var(--text-faint)}
+.import-drop-lbl{font-size:var(--text-sm);font-weight:700;color:var(--text-muted)}
+.import-drop-sub{font-size:var(--text-xs);color:var(--text-faint)}
+#import-file-input{display:none}
+.import-status{border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4);
+  font-size:var(--text-xs);font-weight:600;line-height:1.5;display:none;margin-top:var(--space-2)}
+.import-status.ok{background:color-mix(in oklab,var(--success) 14%,transparent);
+  color:var(--success);border:1px solid color-mix(in oklab,var(--success) 30%,transparent)}
+.import-status.err{background:color-mix(in oklab,var(--danger) 14%,transparent);
+  color:var(--danger);border:1px solid color-mix(in oklab,var(--danger) 30%,transparent)}
+.import-status.warn{background:color-mix(in oklab,var(--warning) 14%,transparent);
+  color:var(--warning);border:1px solid color-mix(in oklab,var(--warning) 30%,transparent)}
+.import-preview-table{width:100%;overflow-x:auto;border-radius:var(--radius-md);
+  background:var(--surface-2);border:1px solid var(--border);margin-top:var(--space-3)}
+.import-preview-table table{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}
+.import-preview-table th{background:var(--surface-3);color:var(--text-muted);font-weight:700;
+  text-transform:uppercase;letter-spacing:.05em;padding:var(--space-2) var(--space-3);
+  text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+.import-preview-table td{padding:var(--space-2) var(--space-3);border-bottom:1px solid var(--divider);
+  color:var(--text);white-space:nowrap}
+.import-preview-table tr:last-child td{border-bottom:none}
+.import-preview-table tr.sum-row td{font-weight:800;color:var(--accent);
+  background:color-mix(in oklab,var(--accent) 7%,transparent)}
+
+.csv-actions{display:flex;gap:var(--space-3)}
+.csv-preview{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:var(--space-4);font-size:12px;font-family:monospace;color:var(--text-muted);
+  white-space:pre;overflow-x:auto;max-height:200px;overflow-y:auto;line-height:1.5}
+.range-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+
+/* ── FAB ── */
+.fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + var(--space-5));
+  right:calc(50% - 220px);width:54px;height:54px;border-radius:var(--radius-full);
+  background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 24px rgba(79,168,255,.4),0 2px 8px rgba(0,0,0,.3);z-index:50;
+  transition:background var(--transition-fast),transform var(--transition-fast),box-shadow var(--transition-fast)}
+.fab:active{transform:scale(.92)}
+@media(max-width:480px){.fab{right:var(--space-5)}}
+
+/* ── MODAL ── */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);z-index:200;display:flex;align-items:flex-end;
+  justify-content:center;opacity:0;pointer-events:none;transition:opacity var(--transition-slow)}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--surface);border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+  border-top:1px solid var(--border);width:100%;max-width:480px;
+  padding:var(--space-5) var(--space-5) calc(env(safe-area-inset-bottom,0px) + var(--space-8));
+  transform:translateY(100%);transition:transform var(--transition-slow);max-height:88dvh;overflow-y:auto}
+.modal-ov.open .modal-sheet{transform:translateY(0)}
+.modal-handle{width:40px;height:4px;background:var(--text-faint);border-radius:var(--radius-full);
+  margin:0 auto var(--space-5)}
+.modal-title{font-size:var(--text-lg);font-weight:800;color:var(--text);margin-bottom:var(--space-5)}
+.edit-list{display:flex;flex-direction:column;gap:var(--space-3);margin-bottom:var(--space-6)}
+.edit-row{display:flex;align-items:center;gap:var(--space-3);background:var(--surface-2);
+  border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-3) var(--space-4)}
+.edit-num{width:30px;height:30px;border-radius:var(--radius-full);display:flex;
+  align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+.edit-input{flex:1;background:transparent;border:none;border-bottom:1.5px solid var(--border);
+  padding:var(--space-1) 0;font-size:var(--text-base);color:var(--text);
+  font-family:var(--font-body);min-width:0}
+.edit-input:focus{outline:none;border-bottom-color:var(--accent)}
+.edit-input::placeholder{color:var(--text-faint)}
+.del-btn{width:30px;height:30px;border-radius:var(--radius-full);
+  background:rgba(255,107,107,.13);color:var(--danger);display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;
+  transition:background var(--transition-fast)}
+.del-btn:active{background:rgba(255,107,107,.3)}
+.reset-btn{width:30px;height:30px;border-radius:var(--radius-full);
+  background:rgba(255,179,71,.13);color:var(--warning);display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;
+  transition:background var(--transition-fast)}
+.reset-btn:active{background:rgba(255,179,71,.3)}
+.add-task-btn{display:flex;align-items:center;justify-content:center;gap:var(--space-2);
+  width:100%;padding:var(--space-3);border:1.5px dashed var(--border);
+  border-radius:var(--radius-lg);color:var(--text-muted);font-size:var(--text-sm);
+  font-weight:700;transition:border-color var(--transition-fast),color var(--transition-fast),
+  background var(--transition-fast);cursor:pointer;margin-bottom:var(--space-4)}
+.add-task-btn:active{background:var(--accent-dim);color:var(--accent);border-color:var(--accent)}
+.modal-btns{display:flex;gap:var(--space-3)}
+.btn{flex:1;padding:var(--space-3) var(--space-4);border-radius:var(--radius-lg);
+  font-size:var(--text-sm);font-weight:800;text-align:center;cursor:pointer;
+  transition:background var(--transition-fast),transform var(--transition-fast);min-height:44px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff;border:none}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-ghost{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.btn-success{background:var(--success);color:#fff;border:none}
+.btn-danger{background:rgba(255,107,107,.15);color:var(--danger);border:1px solid rgba(255,107,107,.3)}
+
+/* toast */
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:var(--space-3) var(--space-5);font-size:var(--text-sm);font-weight:600;
+  color:var(--text);box-shadow:var(--shadow-lg);opacity:0;z-index:300;
+  transition:opacity .3s ease,transform .3s ease;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.fab-spacer{height:80px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOP NAV -->
+<nav class="top-nav" role="navigation" aria-label="Nawigacja">
+  <button class="nb active" data-t="home"  onclick="nav(this,'home')"    aria-label="Ekran domowy">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dom</button>
+  <button class="nb" data-t="day"   onclick="nav(this,'day')"     aria-label="Dzień">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Dzień</button>
+  <button class="nb" data-t="week"  onclick="nav(this,'week')"    aria-label="Tydzień">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Tydzień</button>
+  <button class="nb" data-t="month" onclick="nav(this,'month')"   aria-label="Miesiąc">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Miesiąc</button>
+  <button class="nb" data-t="qtr"   onclick="nav(this,'qtr')"     aria-label="Kwartał">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Kwartał</button>
+  <button class="nb" data-t="csv"   onclick="nav(this,'csv')"     aria-label="Eksport CSV">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>CSV</button>
+  <button class="theme-btn" onclick="toggleTheme()" aria-label="Przełącz motyw">
+    <svg id="th-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+
+<!-- ██ HOME ██ -->
+<section class="screen active" id="s-home">
+  <div class="home-hdr">
+    <div class="hcard"><span class="hlbl">Dzisiaj</span><span class="hval" id="hdr-date">—</span><span class="hsub" id="hdr-today">0:00:00</span></div>
+    <div class="hcard"><span class="hlbl" id="hdr-mlbl">Miesiąc</span><span class="hval" id="hdr-mname">—</span><span class="hsub" id="hdr-mtotal">0:00:00</span></div>
+  </div>
+  <div class="tile-grid" id="tile-grid">
+    <!-- tiles injected by JS -->
+    <button class="tile-add" onclick="quickAddTask()" aria-label="Dodaj zadanie">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      DODAJ ZADANIE
+    </button>
+  </div>
+  <div class="fab-spacer"></div>
+</section>
+
+<!-- ██ DAY ██ -->
+<section class="screen" id="s-day">
+  <div class="stats-wrap"><div class="pbadge">📅 STATYSTYKI DNIA</div><div id="c-day"></div></div>
+  <div class="fab-spacer"></div>
+</section>
+
+<!-- ██ WEEK ██ -->
+<section class="screen" id="s-week">
+  <div class="stats-wrap"><div class="pbadge">📈 STATYSTYKI TYGODNIA</div><div id="c-week"></div></div>
+  <div class="fab-spacer"></div>
+</section>
+
+<!-- ██ MONTH ██ -->
+<section class="screen" id="s-month">
+  <div class="stats-wrap"><div class="pbadge">🕐 STATYSTYKI MIESIĄCA</div><div id="c-month"></div></div>
+  <div class="fab-spacer"></div>
+</section>
+
+<!-- ██ QUARTER ██ -->
+<section class="screen" id="s-qtr">
+  <div class="stats-wrap"><div class="pbadge">📊 STATYSTYKI KWARTAŁU</div><div id="c-qtr"></div></div>
+  <div class="fab-spacer"></div>
+</section>
+
+<!-- ██ CSV EXPORT ██ -->
+<section class="screen" id="s-csv">
+  <div class="csv-wrap">
+    <div class="pbadge">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      EKSPORT CSV
+    </div>
+
+    <div class="csv-section">
+      <div class="csv-title">Zakres dat</div>
+      <div class="range-row">
+        <div class="csv-row">
+          <label class="csv-label" for="csv-from">Od</label>
+          <input class="csv-input" type="date" id="csv-from">
+        </div>
+        <div class="csv-row">
+          <label class="csv-label" for="csv-to">Do</label>
+          <input class="csv-input" type="date" id="csv-to">
+        </div>
+      </div>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+        <button class="btn btn-ghost" style="flex:none;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)" onclick="setRange('today')">Dzisiaj</button>
+        <button class="btn btn-ghost" style="flex:none;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)" onclick="setRange('week')">Ten tydzień</button>
+        <button class="btn btn-ghost" style="flex:none;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)" onclick="setRange('month')">Ten miesiąc</button>
+        <button class="btn btn-ghost" style="flex:none;padding:var(--space-2) var(--space-3);font-size:var(--text-xs)" onclick="setRange('quarter')">Ten kwartał</button>
+      </div>
+    </div>
+
+    <div class="csv-section">
+      <div class="csv-title">Podgląd CSV</div>
+      <div class="csv-preview" id="csv-preview">— wybierz zakres dat aby zobaczyć podgląd —</div>
+      <div class="csv-actions">
+        <button class="btn btn-primary" onclick="downloadCSV()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;margin-right:6px;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Pobierz CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="csv-section">
+      <div class="csv-title">Wyślij na e-mail</div>
+      <div class="csv-row">
+        <label class="csv-label" for="csv-email">Adres e-mail</label>
+        <input class="csv-input" type="email" id="csv-email" placeholder="twoj@email.com">
+      </div>
+      <button class="btn btn-primary" onclick="sendEmail()" style="margin-top:var(--space-2)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;margin-right:6px;vertical-align:middle"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Wyślij e-mail
+      </button>
+      <p style="font-size:var(--text-xs);color:var(--text-muted);line-height:1.5">
+        Otworzy klienta pocztowego z przygotowaną wiadomością i danymi CSV w treści. 
+        Możesz skopiować treść lub dołączyć plik ręcznie.
+      </p>
+    </div>
+  </div>
+
+    <div class="csv-section">
+      <div class="csv-title">Import CSV</div>
+      <p style="font-size:var(--text-xs);color:var(--text-muted);line-height:1.6;margin-bottom:var(--space-3)">
+        Wgraj wcześniej pobrany plik CSV, aby przywrócić dane historyczne.<br>
+        <strong style="color:var(--warning)">Uwaga:</strong> kafelki zostaną zastąpione tymi z pliku — stare zadania zostaną usunięte.
+      </p>
+      <div class="import-drop" id="import-drop"
+           onclick="document.getElementById('import-file-input').click()"
+           ondragover="event.preventDefault();this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')"
+           ondrop="handleImportDrop(event)">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        <span class="import-drop-lbl">Kliknij lub przeciągnij plik CSV</span>
+        <span class="import-drop-sub">Obsługiwany format: eksport z WorkTimer (.csv)</span>
+      </div>
+      <input type="file" id="import-file-input" accept=".csv,text/csv" onchange="handleImportFile(this.files[0])">
+      <div class="import-status" id="import-status"></div>
+      <div id="import-preview"></div>
+      <button class="btn btn-primary" id="import-confirm-btn" onclick="confirmImport()" style="display:none;margin-top:var(--space-3)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;margin-right:6px;vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg>
+        Zatwierdź import i zastąp dane
+      </button>
+    </div>
+  </div>
+  <div class="fab-spacer"></div>
+</section>
+
+</div><!-- /app -->
+
+<!-- FAB -->
+<button class="fab" onclick="openModal()" aria-label="Edytuj zadania">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+</button>
+
+<!-- Edit Modal -->
+<div class="modal-ov" id="modal" role="dialog" aria-modal="true" aria-label="Edytuj zadania">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Zarządzaj zadaniami</div>
+    <div class="edit-list" id="edit-list"></div>
+    <button class="add-task-btn" onclick="addTaskFromModal()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Dodaj nowe zadanie
+    </button>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">Anuluj</button>
+      <button class="btn btn-primary" onclick="saveAll()">Zapisz</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════
+const COLORS = ['#4fa8ff','#a78bfa','#34d399','#fb923c','#f472b6','#facc15','#38bdf8','#4ade80'];
+const MONTH_NAMES = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec',
+                     'Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+const DAY_SHORT   = ['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+
+// ═══════════════════════════════════════════════════
+// STATE (in-memory — no localStorage per sandbox rules)
+// ═══════════════════════════════════════════════════
+let tasks = [
+  {name:'Projekt A',elapsed:0,running:false,startTs:null},
+  {name:'Projekt B',elapsed:0,running:false,startTs:null},
+  {name:'Projekt C',elapsed:0,running:false,startTs:null},
+  {name:'Projekt D',elapsed:0,running:false,startTs:null},
+];
+let archive = {};       // {dateKey:[secs0,secs1,...]}
+let currentScreen = 'home';
+let lastDayKey = todayKey();
+let theme = 'dark';
+
+// ═══════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════
+function pad(n){return String(n).padStart(2,'0')}
+function todayKey(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function secsToHMS(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sc=s%60;return h+':'+pad(m)+':'+pad(sc)}
+function secsToHM(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60);return h+'g '+pad(m)+'m'}
+function elapsed(i){const t=tasks[i];return t.elapsed+(t.running?Math.floor((Date.now()-t.startTs)/1000):0)}
+function fmtDate(iso){const[y,m,d]=iso.split('-');return d+'.'+m+'.'+y}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function colorOf(i){return COLORS[i%COLORS.length]}
+
+function getWeekStart(d){const dd=new Date(d),day=dd.getDay()||7;dd.setDate(dd.getDate()-day+1);dd.setHours(0,0,0,0);return dd}
+function getMonthKey(iso){return iso.slice(0,7)}
+function getQuarterKey(iso){const m=parseInt(iso.slice(5,7));return iso.slice(0,4)+'-Q'+Math.ceil(m/3)}
+
+function toast(msg,ok=true){
+  const el=document.getElementById('toast');
+  el.textContent=msg;
+  el.style.borderColor=ok?'var(--success)':'var(--danger)';
+  el.style.color=ok?'var(--success)':'var(--danger)';
+  el.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.remove('show'),2600);
+}
+
+// ═══════════════════════════════════════════════════
+// TILE RENDERING
+// ═══════════════════════════════════════════════════
+function buildTileHTML(i){
+  const t = tasks[i];
+  const ci = i % COLORS.length;
+  const col = COLORS[ci];
+  const e = elapsed(i);
+  const running = t.running;
+  return `
+<div class="tile${running?' running':''}" id="tile-${i}" data-ci="${ci}"
+  role="button" tabindex="0"
+  onclick="toggleTile(${i})"
+  onkeydown="if(event.key==='Enter'||event.key===' '){toggleTile(${i})}"
+  aria-label="Zadanie ${i+1}: ${esc(t.name)}">
+  <div class="tile-dot"></div>
+  <span class="tile-lbl">ZADANIE ${i+1}</span>
+  <span class="tile-name" id="tname-${i}">${esc(t.name)}</span>
+  <span class="tile-time" style="color:${running?'var(--tile-on-accent)':col+'99'}" id="ttime-${i}">${secsToHMS(e)}</span>
+  <span class="tile-state" id="tstate-${i}">
+    ${running
+      ? `<svg width="9" height="9" viewBox="0 0 24 24" fill="${col}" stroke="none"><circle cx="12" cy="12" r="10"/></svg> Aktywne`
+      : `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Zatrzymane`}
+  </span>
+</div>`;
+}
+
+function renderAllTiles(){
+  const grid = document.getElementById('tile-grid');
+  const addBtn = grid.querySelector('.tile-add');
+  // remove old tiles
+  grid.querySelectorAll('.tile').forEach(el=>el.remove());
+  // insert before add-button
+  tasks.forEach((_,i)=>{
+    const tmp = document.createElement('div');
+    tmp.innerHTML = buildTileHTML(i);
+    grid.insertBefore(tmp.firstElementChild, addBtn);
+  });
+}
+
+function updateTile(i){
+  const tile = document.getElementById('tile-'+i);
+  if(!tile) return;
+  const t = tasks[i];
+  const running = t.running;
+  const col = colorOf(i);
+  document.getElementById('ttime-'+i).textContent = secsToHMS(elapsed(i));
+  document.getElementById('ttime-'+i).style.color = running ? 'var(--tile-on-accent)' : col+'99';
+  document.getElementById('tstate-'+i).innerHTML = running
+    ? `<svg width="9" height="9" viewBox="0 0 24 24" fill="${col}" stroke="none"><circle cx="12" cy="12" r="10"/></svg> Aktywne`
+    : `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Zatrzymane`;
+  if(running) tile.classList.add('running'); else tile.classList.remove('running');
+}
+
+// ═══════════════════════════════════════════════════
+// TIMER LOGIC
+// ═══════════════════════════════════════════════════
+function toggleTile(idx){
+  const wasRunning = tasks[idx].running;
+  tasks.forEach((t,i)=>{
+    if(t.running){
+      t.elapsed+=Math.floor((Date.now()-t.startTs)/1000);
+      t.running=false; t.startTs=null; updateTile(i);
+    }
+  });
+  if(!wasRunning){
+    tasks[idx].running=true; tasks[idx].startTs=Date.now(); updateTile(idx);
+  }
+  renderHeader();
+}
+
+function renderHeader(){
+  const now = new Date();
+  const todayTotal = tasks.reduce((s,_,i)=>s+elapsed(i),0);
+  const mk = getMonthKey(todayKey());
+  let mTotal = todayTotal;
+  Object.entries(archive).forEach(([dk,arr])=>{
+    if(getMonthKey(dk)===mk) mTotal+=arr.reduce((a,b)=>a+b,0);
+  });
+  document.getElementById('hdr-date').textContent = DAY_SHORT[now.getDay()]+' '+pad(now.getDate())+'.'+pad(now.getMonth()+1);
+  document.getElementById('hdr-today').textContent = secsToHMS(todayTotal);
+  document.getElementById('hdr-mlbl').textContent = 'Miesiąc '+(now.getMonth()+1);
+  document.getElementById('hdr-mname').textContent = MONTH_NAMES[now.getMonth()];
+  document.getElementById('hdr-mtotal').textContent = secsToHMS(mTotal);
+}
+
+// ═══════════════════════════════════════════════════
+// MIDNIGHT ROLLOVER
+// ═══════════════════════════════════════════════════
+function checkMidnight(){
+  const k=todayKey();
+  if(k!==lastDayKey){
+    const dayData=tasks.map((_,i)=>elapsed(i));
+    if(!archive[lastDayKey]) archive[lastDayKey]=new Array(tasks.length).fill(0);
+    // pad archive if tasks were added
+    while(archive[lastDayKey].length<tasks.length) archive[lastDayKey].push(0);
+    archive[lastDayKey]=archive[lastDayKey].map((v,i)=>v+(dayData[i]||0));
+    tasks.forEach(t=>{t.elapsed=0;if(t.running)t.startTs=Date.now();});
+    lastDayKey=k;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════
+function buildStats(rows,total,period){
+  const maxS=Math.max(...rows.map(r=>r.secs),1);
+  const rowsHTML = rows.map((r,i)=>{
+    const pct=total>0?Math.round(r.secs/total*100):0;
+    const col=colorOf(i);
+    return `<div class="task-row">
+      <div class="task-dot" style="background:${col}"></div>
+      <div class="task-info">
+        <div class="task-name">${esc(r.name)}</div>
+        <div class="task-hms">${secsToHM(r.secs)} &middot; ${secsToHMS(r.secs)}</div>
+      </div>
+      <span class="pct" style="color:${col}">${pct}%</span>
+      <div class="bar-wrap"><div class="bar" style="width:${Math.round(r.secs/maxS*100)}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+  return `<div class="total-card">
+    <div class="tlbl">${esc(period)}</div>
+    <div class="tval">${secsToHMS(total)}</div>
+    <div class="tsub">Łączny czas — ${secsToHM(total)}</div>
+  </div>
+  <div class="tasks-list">${rowsHTML}</div>`;
+}
+
+function aggSecs(filterFn){
+  const secs=new Array(tasks.length).fill(0);
+  Object.entries(archive).forEach(([dk,arr])=>{
+    if(filterFn(dk)) arr.forEach((v,i)=>{if(i<tasks.length)secs[i]+=v;});
+  });
+  tasks.forEach((_,i)=>secs[i]+=elapsed(i));
+  return secs;
+}
+
+function renderDay(){
+  const rows=tasks.map((t,i)=>({name:t.name,secs:elapsed(i)}));
+  const now=new Date();
+  document.getElementById('c-day').innerHTML=
+    buildStats(rows,rows.reduce((s,r)=>s+r.secs,0),
+      pad(now.getDate())+'.'+pad(now.getMonth()+1)+'.'+now.getFullYear());
+}
+function renderWeek(){
+  const now=new Date(),mon=getWeekStart(now);
+  const sun=new Date(mon);sun.setDate(mon.getDate()+6);sun.setHours(23,59,59,999);
+  const tk=todayKey();
+  const secs=aggSecs(dk=>{const d=new Date(dk+'T00:00:00');return d>=mon&&d<=sun&&dk!==tk;});
+  tasks.forEach((_,i)=>secs[i]+=elapsed(i));
+  // fix double-count today
+  const rows=tasks.map((t,i)=>({name:t.name,secs:secs[i]}));
+  const label=fmtDate(mon.toISOString().slice(0,10))+' – '+fmtDate(sun.toISOString().slice(0,10));
+  document.getElementById('c-week').innerHTML=buildStats(rows,secs.reduce((a,b)=>a+b,0),label);
+}
+function renderMonth(){
+  const mk=getMonthKey(todayKey());
+  const secs=aggSecs(dk=>getMonthKey(dk)===mk&&dk!==todayKey());
+  tasks.forEach((_,i)=>secs[i]+=elapsed(i));
+  const now=new Date();
+  const rows=tasks.map((t,i)=>({name:t.name,secs:secs[i]}));
+  document.getElementById('c-month').innerHTML=buildStats(rows,secs.reduce((a,b)=>a+b,0),
+    MONTH_NAMES[now.getMonth()]+' '+now.getFullYear());
+}
+function renderQtr(){
+  const qk=getQuarterKey(todayKey());
+  const secs=aggSecs(dk=>getQuarterKey(dk)===qk&&dk!==todayKey());
+  tasks.forEach((_,i)=>secs[i]+=elapsed(i));
+  const now=new Date(),q=Math.ceil((now.getMonth()+1)/3);
+  const rows=tasks.map((t,i)=>({name:t.name,secs:secs[i]}));
+  document.getElementById('c-qtr').innerHTML=buildStats(rows,secs.reduce((a,b)=>a+b,0),'Q'+q+' '+now.getFullYear());
+}
+
+function refreshStats(){
+  if(currentScreen==='day')   renderDay();
+  else if(currentScreen==='week')  renderWeek();
+  else if(currentScreen==='month') renderMonth();
+  else if(currentScreen==='qtr')   renderQtr();
+  else if(currentScreen==='csv')   refreshCSVPreview();
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function nav(btn,screen){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+screen).classList.add('active');
+  btn.classList.add('active');
+  currentScreen=screen;
+  if(screen!=='home') refreshStats();
+}
+
+// ═══════════════════════════════════════════════════
+// TASK MANAGEMENT
+// ═══════════════════════════════════════════════════
+function quickAddTask(){
+  const name = 'Zadanie '+(tasks.length+1);
+  tasks.push({name,elapsed:0,running:false,startTs:null});
+  renderAllTiles();
+  toast('Dodano: '+name);
+}
+
+function addTaskFromModal(){
+  tasks.push({name:'Nowe zadanie',elapsed:0,running:false,startTs:null});
+  buildEditList();
+  // focus new input
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll('#edit-list .edit-input');
+    if(inputs.length) inputs[inputs.length-1].focus();
+  },50);
+}
+
+function deleteTask(idx){
+  if(tasks.length<=1){toast('Minimalna liczba zadań to 1',false);return;}
+  if(tasks[idx].running){
+    tasks[idx].elapsed+=Math.floor((Date.now()-tasks[idx].startTs)/1000);
+    tasks[idx].running=false; tasks[idx].startTs=null;
+  }
+  tasks.splice(idx,1);
+  buildEditList();
+}
+
+function resetTaskTime(idx){
+  if(!confirm('Zresetować czas zadania "'+tasks[idx].name+'"?'))return;
+  tasks[idx].elapsed=0;
+  if(tasks[idx].running)tasks[idx].startTs=Date.now();
+  renderAllTiles();
+  renderHeader();
+  toast('Zresetowano czas: '+tasks[idx].name);
+}
+
+// ═══════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════
+function buildEditList(){
+  document.getElementById('edit-list').innerHTML = tasks.map((t,i)=>`
+    <div class="edit-row" id="erow-${i}">
+      <div class="edit-num" style="background:${colorOf(i)}22;color:${colorOf(i)}">${i+1}</div>
+      <input class="edit-input" id="ei-${i}" value="${esc(t.name)}" maxlength="30" placeholder="Nazwa zadania">
+      <button class="reset-btn" onclick="resetTaskTime(${i})" aria-label="Resetuj czas ${i+1}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+      </button>
+      <button class="del-btn" onclick="deleteTask(${i})" aria-label="Usuń zadanie ${i+1}">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </button>
+    </div>`).join('');
+}
+
+function openModal(){
+  buildEditList();
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+}
+
+function saveAll(){
+  tasks.forEach((t,i)=>{
+    const v=document.getElementById('ei-'+i);
+    if(v&&v.value.trim()) t.name=v.value.trim();
+  });
+  renderAllTiles();
+  closeModal();
+  toast('Zapisano zmiany ✓');
+}
+
+document.getElementById('modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal'))closeModal();
+});
+
+// ═══════════════════════════════════════════════════
+// CSV EXPORT
+// ═══════════════════════════════════════════════════
+function setRange(type){
+  const now=new Date();
+  let from,to;
+  if(type==='today'){
+    from=to=todayKey();
+  } else if(type==='week'){
+    const mon=getWeekStart(now);
+    const sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    from=mon.toISOString().slice(0,10);
+    to=sun.toISOString().slice(0,10);
+  } else if(type==='month'){
+    from=now.getFullYear()+'-'+pad(now.getMonth()+1)+'-01';
+    const last=new Date(now.getFullYear(),now.getMonth()+1,0);
+    to=last.getFullYear()+'-'+pad(last.getMonth()+1)+'-'+pad(last.getDate());
+  } else if(type==='quarter'){
+    const q=Math.ceil((now.getMonth()+1)/3);
+    const qStart=(q-1)*3;
+    from=now.getFullYear()+'-'+pad(qStart+1)+'-01';
+    const qEndMonth=q*3;
+    const lastDay=new Date(now.getFullYear(),qEndMonth,0);
+    to=lastDay.getFullYear()+'-'+pad(lastDay.getMonth()+1)+'-'+pad(lastDay.getDate());
+  }
+  document.getElementById('csv-from').value=from;
+  document.getElementById('csv-to').value=to;
+  refreshCSVPreview();
+}
+
+function buildCSVData(){
+  const fromVal=document.getElementById('csv-from').value;
+  const toVal=document.getElementById('csv-to').value;
+  if(!fromVal||!toVal) return null;
+  const from=new Date(fromVal+'T00:00:00');
+  const to=new Date(toVal+'T23:59:59');
+  const tk=todayKey();
+
+  // Collect all relevant date keys
+  const allKeys=new Set();
+  Object.keys(archive).forEach(dk=>{
+    const d=new Date(dk+'T00:00:00');
+    if(d>=from&&d<=to) allKeys.add(dk);
+  });
+  if(new Date(tk+'T00:00:00')>=from&&new Date(tk+'T00:00:00')<=to) allKeys.add(tk);
+
+  const sortedKeys=[...allKeys].sort();
+
+  // Header
+  const taskNames=tasks.map(t=>'"'+t.name.replace(/"/g,'""')+'"');
+  let csv='Data,'+taskNames.join(',')+',Suma\n';
+
+  let grandTotals=new Array(tasks.length).fill(0);
+
+  sortedKeys.forEach(dk=>{
+    let row;
+    if(dk===tk){
+      row=tasks.map((_,i)=>elapsed(i));
+    } else {
+      const arr=archive[dk]||[];
+      row=tasks.map((_,i)=>arr[i]||0);
+    }
+    const rowSum=row.reduce((a,b)=>a+b,0);
+    row.forEach((v,i)=>grandTotals[i]+=v);
+    const rowFmt=row.map(s=>secsToHMS(s));
+    csv+=fmtDate(dk)+','+rowFmt.join(',')+','+secsToHMS(rowSum)+'\n';
+  });
+
+  if(sortedKeys.length>0){
+    const grandSum=grandTotals.reduce((a,b)=>a+b,0);
+    csv+='SUMA,'+grandTotals.map(s=>secsToHMS(s)).join(',')+','+secsToHMS(grandSum)+'\n';
+  }
+  return {csv,sortedKeys};
+}
+
+function refreshCSVPreview(){
+  const result=buildCSVData();
+  const el=document.getElementById('csv-preview');
+  if(!result){el.textContent='— wybierz zakres dat —';return;}
+  if(result.sortedKeys.length===0){el.textContent='Brak danych w wybranym zakresie.';return;}
+  el.textContent=result.csv;
+}
+
+// Inputs → live preview
+document.getElementById('csv-from').addEventListener('change',refreshCSVPreview);
+document.getElementById('csv-to').addEventListener('change',refreshCSVPreview);
+
+function downloadCSV(){
+  const result=buildCSVData();
+  if(!result||result.sortedKeys.length===0){toast('Brak danych do eksportu',false);return;}
+  const blob=new Blob(['\uFEFF'+result.csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  const from=document.getElementById('csv-from').value||'';
+  const to=document.getElementById('csv-to').value||'';
+  a.download='work-timer-'+from+'_'+to+'.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Plik CSV pobrany ✓');
+}
+
+function sendEmail(){
+  const email=document.getElementById('csv-email').value.trim();
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    toast('Wpisz prawidłowy adres e-mail',false);return;
+  }
+  const result=buildCSVData();
+  if(!result||result.sortedKeys.length===0){toast('Brak danych — wybierz zakres dat',false);return;}
+
+  const from=document.getElementById('csv-from').value||'—';
+  const to=document.getElementById('csv-to').value||'—';
+  const subject=encodeURIComponent('WorkTimer — raport '+fmtDate(from)+' – '+fmtDate(to));
+  const body=encodeURIComponent(
+    'Raport czasu pracy WorkTimer\n'+
+    'Zakres: '+fmtDate(from)+' – '+fmtDate(to)+'\n\n'+
+    result.csv+'\n\n---\nWygenerowano przez WorkTimer');
+  window.location.href='mailto:'+email+'?subject='+subject+'&body='+body;
+  toast('Otwieram klienta poczty…');
+}
+
+
+// ═══════════════════════════════════════════════════
+// CSV IMPORT
+// ═══════════════════════════════════════════════════
+let pendingImport = null;
+
+function hmsToSecs(str){
+  if(!str||str.trim()===''||str.trim()==='-') return 0;
+  str=str.trim();
+  const parts=str.split(':');
+  if(parts.length===3){
+    return parseInt(parts[0]||0)*3600+parseInt(parts[1]||0)*60+parseInt(parts[2]||0);
+  }
+  const n=parseFloat(str);
+  return isNaN(n)?0:Math.floor(n);
+}
+
+function parseISODate(str){
+  if(!str) return null;
+  str=str.trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+  const m=str.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if(m) return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');
+  return null;
+}
+
+function setImportStatus(msg,type){
+  const el=document.getElementById('import-status');
+  el.textContent=msg;
+  el.className='import-status '+type;
+  el.style.display='block';
+}
+
+function handleImportDrop(e){
+  e.preventDefault();
+  document.getElementById('import-drop').classList.remove('drag');
+  const file=e.dataTransfer.files[0];
+  if(file) handleImportFile(file);
+}
+
+function handleImportFile(file){
+  if(!file) return;
+  if(!file.name.toLowerCase().endsWith('.csv')&&file.type!=='text/csv'){
+    setImportStatus('Nieprawidlowy format — wybierz plik .csv','err');
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const text=e.target.result.replace(/^\uFEFF/,'');
+    parseImportCSV(text);
+  };
+  reader.onerror=function(){setImportStatus('Blad odczytu pliku','err');};
+  reader.readAsText(file,'UTF-8');
+  document.getElementById('import-file-input').value='';
+}
+
+function parseCSVLine(line){
+  const result=[];
+  let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){
+      if(inQ&&line[i+1]==='"'){cur+='"';i++;}
+      else inQ=!inQ;
+    } else if(ch===','&&!inQ){
+      result.push(cur.trim());cur='';
+    } else { cur+=ch; }
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function parseImportCSV(text){
+  document.getElementById('import-preview').innerHTML='';
+  document.getElementById('import-confirm-btn').style.display='none';
+  pendingImport=null;
+
+  const rawLines=text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0);
+  if(rawLines.length<2){setImportStatus('Plik CSV jest pusty lub nieprawidlowy','err');return;}
+
+  const headerRow=parseCSVLine(rawLines[0]);
+  if(headerRow.length<3){setImportStatus('Naglowek CSV musi miec co najmniej: Data, Zadanie, Suma','err');return;}
+
+  if(headerRow[0].toLowerCase()!=='data'){
+    setImportStatus('Pierwsza kolumna musi byc "Data". Znaleziono: "'+headerRow[0]+'"','err');
+    return;
+  }
+
+  const taskNames=headerRow.slice(1,headerRow.length-1);
+  if(taskNames.length===0){setImportStatus('Brak kolumn zadan w pliku CSV','err');return;}
+
+  const newArchive={};
+  let parsedRows=0,errCount=0;
+
+  for(let i=1;i<rawLines.length;i++){
+    const cols=parseCSVLine(rawLines[i]);
+    if(!cols[0]) continue;
+    const ds=cols[0].toUpperCase();
+    if(ds==='SUMA'||ds==='RAZEM'||ds==='TOTAL') continue;
+
+    const isoDate=parseISODate(cols[0]);
+    if(!isoDate){errCount++;continue;}
+
+    const secArr=taskNames.map((_,ti)=>hmsToSecs(cols[ti+1]||'0'));
+    if(newArchive[isoDate]){
+      newArchive[isoDate]=newArchive[isoDate].map((v,ti)=>v+(secArr[ti]||0));
+    } else {
+      newArchive[isoDate]=[...secArr];
+    }
+    parsedRows++;
+  }
+
+  if(parsedRows===0){setImportStatus('Nie znaleziono zadnych prawidlowych wierszy','err');return;}
+
+  const newTasks=taskNames.map(name=>({name,elapsed:0,running:false,startTs:null}));
+
+  // If today's data in archive — move to tasks
+  const tk=todayKey();
+  if(newArchive[tk]){
+    newArchive[tk].forEach((secs,i)=>{if(newTasks[i])newTasks[i].elapsed=secs;});
+    delete newArchive[tk];
+  }
+
+  pendingImport={tasks:newTasks,archive:newArchive,taskNames};
+
+  // Build preview table
+  const sortedKeys=Object.keys(newArchive).sort();
+  const previewKeys=sortedKeys.slice(-5);
+  let tableHtml='<div class="import-preview-table"><table>';
+  tableHtml+='<tr><th>Data</th>'+taskNames.map(n=>'<th>'+esc(n)+'</th>').join('')+'<th>Suma</th></tr>';
+  previewKeys.forEach(dk=>{
+    const row=newArchive[dk];
+    const s=row.reduce((a,b)=>a+b,0);
+    tableHtml+='<tr><td>'+fmtDate(dk)+'</td>'+row.map(v=>'<td>'+secsToHMS(v)+'</td>').join('')+'<td>'+secsToHMS(s)+'</td></tr>';
+  });
+  if(sortedKeys.length>5){
+    tableHtml+='<tr><td colspan="'+(taskNames.length+2)+'" style="text-align:center;color:var(--text-faint);font-size:10px">... i '+(sortedKeys.length-5)+' wczesniejszych dni ...</td></tr>';
+  }
+  const todayHasData=newTasks.some(t=>t.elapsed>0);
+  if(todayHasData){
+    const todayRow=newTasks.map(t=>t.elapsed);
+    const todaySum=todayRow.reduce((a,b)=>a+b,0);
+    tableHtml+='<tr><td>Dzisiaj</td>'+todayRow.map(v=>'<td>'+secsToHMS(v)+'</td>').join('')+'<td>'+secsToHMS(todaySum)+'</td></tr>';
+  }
+  const totals=taskNames.map((_,ti)=>{
+    let s=newTasks[ti].elapsed;
+    sortedKeys.forEach(dk=>{s+=(newArchive[dk][ti]||0);});
+    return s;
+  });
+  const grandSum=totals.reduce((a,b)=>a+b,0);
+  tableHtml+='<tr class="sum-row"><td>SUMA</td>'+totals.map(v=>'<td>'+secsToHMS(v)+'</td>').join('')+'<td>'+secsToHMS(grandSum)+'</td></tr>';
+  tableHtml+='</table></div>';
+  document.getElementById('import-preview').innerHTML=tableHtml;
+
+  const warnTxt=errCount>0?' ('+errCount+' wierszy pominieto)':'';
+  const rangeStr=sortedKeys.length>0?' | '+fmtDate(sortedKeys[0])+' – '+fmtDate(sortedKeys[sortedKeys.length-1]):'';
+  setImportStatus('Wczytano: '+taskNames.length+' zadan, '+parsedRows+' dni'+warnTxt+rangeStr, errCount>0?'warn':'ok');
+  document.getElementById('import-confirm-btn').style.display='block';
+}
+
+function confirmImport(){
+  if(!pendingImport){setImportStatus('Brak zaladowanych danych','err');return;}
+  tasks.forEach(t=>{
+    if(t.running){t.elapsed+=Math.floor((Date.now()-t.startTs)/1000);t.running=false;t.startTs=null;}
+  });
+  tasks=pendingImport.tasks;
+  archive=pendingImport.archive;
+  pendingImport=null;
+  document.getElementById('import-confirm-btn').style.display='none';
+  document.getElementById('import-preview').innerHTML='';
+  setImportStatus('Import zakonczony! Kafelki i dane historyczne zostaly zaktualizowane.','ok');
+  renderAllTiles();
+  renderHeader();
+  refreshCSVPreview();
+  toast('Import CSV zakonczony ('+tasks.length+' zadan)');
+}
+
+// ═══════════════════════════════════════════════════
+// THEME
+// ═══════════════════════════════════════════════════
+function toggleTheme(){
+  theme=theme==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('th-ico').innerHTML=theme==='dark'
+    ?'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    :'<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+}
+
+// ═══════════════════════════════════════════════════
+// TICK
+// ═══════════════════════════════════════════════════
+function tick(){
+  checkMidnight();
+  tasks.forEach((_,i)=>{if(tasks[i].running)updateTile(i);});
+  renderHeader();
+  refreshStats();
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+renderAllTiles();
+renderHeader();
+setInterval(tick,1000);
+
+// set default date range to today
+(()=>{
+  const t=todayKey();
+  document.getElementById('csv-from').value=t;
+  document.getElementById('csv-to').value=t;
+})();
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW zarejestrowany:', reg.scope))
+      .catch(err => console.error('SW błąd:', err));
+  });
+}
+</script>
+</body>
+</html>
